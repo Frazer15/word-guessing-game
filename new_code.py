@@ -1,6 +1,5 @@
 import random
 s="abcdef123"
-print(''.join(random.sample(s,len(s))))
 
 from english_words import get_english_words_set
 web2lowerset = get_english_words_set(['web2'], lower=True, alpha=True)
@@ -15,9 +14,24 @@ for word in web2lowerset:
     else:
         pass
 
+original_word = random.choice(word_length_list) # choosing a word from a list
+original_word = original_word.lower()
+print('   '.join(random.sample(original_word,len(original_word)))) # making the word randomized
+
+def possible_answers:
+    answer_list = []
+    matched_words = word_length_list
+    original_list = original_word.split("")
+    sorted_list = original_list.sort()
+    for z in matched_words:
+        maybe_answer = z.split()
+        closer_answer = maybe_answer.sort()
+        if sorted_list == closer_answer:
+            answer_list.append(z)
+
 def answer_checker(guess):
-    if len(guess) == properWordLength:
-        if guess in word_length_list:
+    if len(guess) == properWordLength: #check if the input equals the length of the word
+        if guess == original_word: #checking if the word is correct
             print("you have correctly guessed a word")
         else:
             print("my disappointment is immeasurable and my day is ruined")

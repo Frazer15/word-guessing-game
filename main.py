@@ -11,16 +11,25 @@ def word_chooser(word_length_list):
     print('   '.join(random.sample(original_word,len(original_word)))) # making the word randomized
     return original_word
 
-def possible_answers(original_word,word_length_list):
-    answer_list = []
-    matched_words = word_length_list
-    original_list = original_word.split()
-    sorted_list = original_list.sort()
-    for z in matched_words:
-        maybe_answer = z.split()
-        closer_answer = maybe_answer.sort()
-        if sorted_list == closer_answer:
-            answer_list.append(z)
+def possible_answers(original_word, word_length_list):
+    if original_word not in word_length_list:
+        print("oh shit oh fuck")
+    print("this is original word " + str(original_word))
+    answer_list = [] # list of possible answers
+    matched_words = word_length_list # list of all words of a certain length
+    original_list = [*original_word] # making a list out each letter of the correct word
+    original_list.sort() # sorting the correct words list
+    for z in matched_words: # going through every word in the list of all of them
+        z = z.lower()
+        maybe_answer = [*z] # made a list of that instances of the word list
+        maybe_answer.sort() # sort the list of that instance of the word list
+        if original_list == maybe_answer: # checking if the two sorted lists are the same
+            print("this is original list " + str(original_list))
+            print("this is maybe answer " + str(maybe_answer))
+            answer_list.append(z) # if the two sorted lists are the same append the instance to the correct answers list
+        else:
+            pass
+    print("this is answer list " + str(answer_list))
     return answer_list
 
 def answer_checker(guess, answer_list, properwordlength):
@@ -35,45 +44,18 @@ def answer_checker(guess, answer_list, properwordlength):
             pass
     if alpha:
         print("you have correctly guessed a word")
+        continu3 = True
+        return continu3
+
     else:
         print("my disappointment is immeasurable and my day is ruined")
+        print("you could have put " + str(answer_list[0]))
+
         continu3 = False
-
-def dict_warehouse(number):
-    dict3 = {tuple(['b','o','x']):["box"], tuple(['j','o','y']):['joy'], tuple(['e','y','e']):['eye'],
-             tuple(['l','i','p']):["lip"]}
-    allDict = {3:dict3}
-    return allDict[number]
-
-def smart_dict_way(dict):
-    k3y = list(dict.keys())
-    randChoice = random.choice(k3y)
-    val = dict.get(randChoice)
-    randChoice = list(randChoice)
-    random.shuffle(randChoice)
-    return randChoice, val
-
-def tiers(dict):
-    shuffled_word, real_word = smart_dict_way(dict)
-    print(shuffled_word)
-    guessed_word = input("what is the word on the screen unscrambled")
-    a = False
-    for z in real_word:
-        if guessed_word == real_word:
-            print("good job")
-            a = True
-        else:
-            pass
-    if a == False:
-        print('bad job, the word was ' + ' '.join(real_word))
-        continu3 = False
-
-    else:
-        pass
+        return continu3
 
 
 def main():
-    global continu3
     continu3 = True
     web2lowerset = get_english_words_set(['web2'], lower=True, alpha=True)
     properWordLength = 3  # how long word is
@@ -89,9 +71,9 @@ def main():
             word = word_chooser(word_length_list)
             answer_list = possible_answers(word, word_length_list)
             guess = input("what word is the letters on the screen unscrambled")
-            answer_checker(guess, answer_list, properWordLength)
-            #word_list = dict_warehouse(properWordLength)
-            #new_list = tiers(word_list)
+            continu3 = answer_checker(guess, answer_list, properWordLength)
+            if continu3 == False:
+                break
         properWordLength += 1
 
 # Press the green button in the gutter to run the script.

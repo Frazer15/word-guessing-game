@@ -43,10 +43,11 @@ class myGUI:
         self.window.mainloop()
 
     def button_checker(self):
-        print("cheese")
-        print(self)
+        #print("cheese")
+        #print(self)
         print(self.entry.get())
-        return self.entry
+        guess = self.entry
+
         #entered_answer = self.Entry
         #print(entered_answer)
         #answer_checker(entered_answer, )
@@ -124,6 +125,8 @@ def main():
     continu3 = True
     web2lowerset = get_english_words_set(['web2'], lower=True, alpha=True)
     properWordLength = 3  # how long word is
+    global guess
+    guess = ""
     # Use a breakpoint in the code line below to debug your script.
     while continu3 == True:
         word_length_list = []
@@ -136,7 +139,8 @@ def main():
             word = word_chooser(word_length_list)
             answer_list = possible_answers(word, word_length_list)
             #guess = input("what word is the letters on the screen unscrambled")
-            myGUI(word,)
+            my_gui = myGUI(word)
+
             continu3 = answer_checker(guess, answer_list, properWordLength)
             myGUI.addAnswer(continu3)
             if continu3 == False:

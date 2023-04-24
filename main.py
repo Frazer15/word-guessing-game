@@ -47,14 +47,18 @@ from tkinter import *
 from tkinter import ttk
 import random as rnd
 from english_words import get_english_words_set
-
+import asyncio
 
 class word:
+    global word_length_list
+
     web2lowerset = get_english_words_set(['web2'], lower=True, alpha=True)
     proper_word_length = 3
-    def __init__(self,really_big_number):
+    def __init__(self,really_big_number,word_length_list):
         if really_big_number == 6 or really_big_number == 0:
             word_length_list = []
+            if really_big_number != 0:
+                word.proper_word_length += 1
             for x in word.web2lowerset:
                 if len(x) == word.proper_word_length:  # checking if proper word length
                     word_length_list.append(x.lower())  # adding the words to the list
@@ -77,8 +81,8 @@ class word:
     def possible_answers(self,original_word, word_length_list):
         # print("this is original word " + str(original_word))
         answer_list = []  # list of possible answers
-        matched_words = self.word_length_list  # list of all words of a certain length
-        original_list = [*self.original_word]  # making a list out each letter of the correct word
+        matched_words = word_length_list  # list of all words of a certain length
+        original_list = [*original_word]  # making a list out each letter of the correct word
         original_list.sort()  # sorting the correct words list
         for z in matched_words:  # going through every word in the list of all of them
             z = z.lower()
@@ -101,50 +105,152 @@ class word:
     #     scrambled_word = '   '.join(rnd.sample(s, len(s)))
     #     #print("this is "+ scrambled_word + "and type is " + str(type(scrambled_word)))
     #     return scrambled_word
+def possible_answers(original_word, word_length_list):
+    # print("this is original word " + str(original_word))
+    answer_list = []  # list of possible answers
+    matched_words = word_length_list  # list of all words of a certain length
+    original_list = [*original_word]  # making a list out each letter of the correct word
+    original_list.sort()  # sorting the correct words list
+    for z in matched_words:  # going through every word in the list of all of them
+        z = z.lower()
+        maybe_answer = [*z]  # made a list of that instances of the word list
+        maybe_answer.sort()  # sort the list of that instance of the word list
+        if original_list == maybe_answer:  # checking if the two sorted lists are the same
+            # print("this is original list " + str(original_list))
+            # print("this is maybe answer " + str(maybe_answer))
+            answer_list.append(z)  # if the two sorted lists are the same append the instance to the correct answers list
+        else:
+            pass
+    # print("this is answer list " + str(answer_list))
+    return answer_list
+
+async def are_you_fast(window):
+    window.after(10000,print("you are so slow"))
+    window.after(2000,window.destroy())
+
+
+
 
 
 
 def main():
+    global word_length_list
+    word_length_list = []
+
     global really_big_number
     really_big_number = 0
-    big_variable = word(really_big_number)
-    print(big_variable)
+
+    global answers
+    answers = []
+
+    global absolute
+
+    print("This is a check" + str(really_big_number))
+    #big_variable = word(really_big_number)
+    #print(big_variable)
     window = Tk()
 
+    big_variable = word(really_big_number,word_length_list)
+    print(big_variable)
+
+    if really_big_number % 6 == 0 and really_big_number != 0 and really_big_number != 1:
+        word_length_list = big_variable.word_length_list
+
+    elif really_big_number == 0:
+        word_length_list = big_variable.word_length_list
+    else:
+        pass
+
+    filler = ""
+
+
+    #answers = word.possible_answers(filler,big_variable.original_word,big_variable.word_length_list)
+    answers = possible_answers(big_variable.original_word, big_variable.word_length_list)
+    print("This is a check" + str(really_big_number))
+
+
     scrambled_word = StringVar()
+
+    counting_down = StringVar()
 
     #words = ["orf", "acb", "ilp"]
 
     lab = Label(window, text="what is the scrambled word")
     lab.pack(padx=10,pady=10)
 
+    stop_watch = Label(window, textvariable=counting_down)
+
+    scrambled_lab = Label(window, textvariable=scrambled_word)
+    scrambled_lab.pack(padx=10,pady=10)
+
     entry_field = Entry()
     entry_field.pack(padx=10,pady=10)
 
     scrambled_word.set(big_variable)
 
-    def stand_in():
+    print("This is a check" + str(really_big_number))
 
+    # async def are_you_fast():
+    #     window.after(10000, print("you are so slow"))
+    #     window.after(2000, window.destroy())
+    def timers():
+        counting_down.set(absolute)
+        window.update()
+
+    #asy = asyncio.create_task(are_you_fast())
+    for x in range (1,11):
+        absolute = abs(x-11)
+        window.after(1000, timers)
+
+    def stand_in():
+        global really_big_number
+        global answers
+
+        print("This is a check" + str(really_big_number))
         guess = entry_field.get()
 
         entry_field.delete(0, "end")
+        print("this is a really big number" + str(really_big_number))
+
+        print("this is halloween " + str(answers) + " on " + str(type(answers)))
+
+        for x in answers:
+
+            if guess == x:
+                print("congrats")
+
+                #is_cancelled = asy.cancel()
+
+                #print("was cancelled " + str(is_cancelled))
+
+                big_variable = word(really_big_number,word_length_list)
+
+                scrambled_word.set(big_variable)
+
+                really_big_number += 1
+
+                answers = possible_answers(big_variable.original_word, big_variable.word_length_list)
+
+                fancy = Label(window, text="congrats you don't suck")
+                fancy.pack(padx=10, pady=10)
+
+                window.after(3000, fancy.destroy)
+
+                # this is how lambda works lambda:congratulations(fancy)
 
 
 
-        if guess == big_variable:
-            print("congrats")
-            scrambled_word.set(big_variable = word(really_big_number))
 
-            really_big_number += 1
-        else:
-            pass
+
+            else:
+                print(answers)
         window.update
 
     BUTTon = Button(window, text="submit", command=stand_in)
     BUTTon.pack(padx=10, pady=10)
 
-    scrambled_lab = Label(window, textvariable=scrambled_word)
-    scrambled_lab.pack(padx=10,pady=10)
+    #scrambled_lab = Label(window, textvariable=scrambled_word)
+    #scrambled_lab.pack(padx=10,pady=10)
 
     window.title("guessing game")
     window.geometry("500x500")

@@ -48,6 +48,7 @@ from tkinter import ttk
 import random as rnd
 from english_words import get_english_words_set
 import asyncio
+import queue
 
 class word:
     global word_length_list
@@ -143,12 +144,22 @@ def main():
     global answers
     answers = []
 
-    global absolute
+    global truth
+    truth = False
+
+    global after_var
+    after_var = None
+
+    timer_start  = 20
+
+    #global absolute
 
     print("This is a check" + str(really_big_number))
     #big_variable = word(really_big_number)
     #print(big_variable)
     window = Tk()
+
+    the_queue = queue.Queue()
 
     big_variable = word(really_big_number,word_length_list)
     print(big_variable)
@@ -172,13 +183,20 @@ def main():
     scrambled_word = StringVar()
 
     counting_down = StringVar()
+    counting_down.set(timer_start)
+
+    integer = IntVar()
 
     #words = ["orf", "acb", "ilp"]
 
     lab = Label(window, text="what is the scrambled word")
     lab.pack(padx=10,pady=10)
 
-    stop_watch = Label(window, textvariable=counting_down)
+    #stop_watch = Label(window, textvariable=counting_down)
+    #stop_watch.pack(padx=10)
+
+    time_piece = Label(window, textvariable=counting_down)
+    time_piece.pack(padx=10,pady=10)
 
     scrambled_lab = Label(window, textvariable=scrambled_word)
     scrambled_lab.pack(padx=10,pady=10)
@@ -186,25 +204,92 @@ def main():
     entry_field = Entry()
     entry_field.pack(padx=10,pady=10)
 
-    scrambled_word.set(big_variable)
+    scrambled_word.set(str(big_variable))
 
     print("This is a check" + str(really_big_number))
+
+    # def timer(display_watch):
+    #     counting_down.set(str(display_watch))
+    #     window.update()
+    #
+    # def queue_adder():
+    #     for x in range(1, 11):
+    #         absolute = abs(x - 11)
+    #         display_watch = "amount of time left" + str(absolute)
+    #         the_queue.put(timer(display_watch))
+    #
+    #
+    #     the_queue.put(None)
+    #
+    #
+    # def function_of_functions():
+    #     x = 0
+    #     while x < 10:
+    #         message = window.after(1000, the_queue.get())
+    #
+    #         if message == None:
+    #             window.after(10000, print("you are so slow"))
+    #             try:
+    #                 window.after(2000, window.destroy())
+    #             except:
+    #                 print("it is over")
+
+
+
 
     # async def are_you_fast():
     #     window.after(10000, print("you are so slow"))
     #     window.after(2000, window.destroy())
-    def timers():
-        counting_down.set(absolute)
-        window.update()
+    # def timers():
+    #     #for x in range(1, 11):
+    #     absolute = abs(x - 11)
+    #     counting_down.set(str(absolute))
+    #     window.update()
 
     #asy = asyncio.create_task(are_you_fast())
-    for x in range (1,11):
-        absolute = abs(x-11)
-        window.after(1000, timers)
+    #absolute = 10
+    # for x in range(1, 11):
+        #window.after(1000, timers)
+    #queue_adder()
+    #function_of_functions()
+    def timer(x):
+        global truth
+        global after_var
+        print(truth)
+        if truth == True:
+            truth = False
+            x = 20
+
+            #window.reset(after_var)
+        x -= 1
+        if x == 0:
+            #window.destroy()
+            pass
+        counting_down.set(str(x))
+        window.update()
+
+        after_var = window.after(1000, lambda :timer(x))
+        return after_var
+
+    #def timer_stop():
+
+
+    # if "normal" == window.state:
+    #     for x in range(100):
+    #         window.after(1000)
+    #         print(x)
+    #         integer.set(x)
+    #         exerciseLabel = Label(window, textvariable=integer)
+    #         exerciseLabel.pack(padx=10,pady=10)
+    after_var = timer(timer_start)
+
+    print(after_var)
+
 
     def stand_in():
         global really_big_number
         global answers
+        global after_var
 
         print("This is a check" + str(really_big_number))
         guess = entry_field.get()
@@ -222,8 +307,14 @@ def main():
                 #is_cancelled = asy.cancel()
 
                 #print("was cancelled " + str(is_cancelled))
+                print(after_var)
+                window.after_cancel(after_var)
+
+                timer_start = 20
 
                 big_variable = word(really_big_number,word_length_list)
+
+                after_var = timer(timer_start)
 
                 scrambled_word.set(big_variable)
 
@@ -246,14 +337,72 @@ def main():
                 print(answers)
         window.update
 
+        truth = True
+
+    def stand_inn(event):
+        global really_big_number
+        global answers
+
+        print("This is a check" + str(really_big_number))
+        guess = entry_field.get()
+
+        entry_field.delete(0, "end")
+        print("this is a really big number" + str(really_big_number))
+
+        print("this is halloween " + str(answers) + " on " + str(type(answers)))
+
+        for x in answers:
+
+            if guess == x:
+                print("congrats")
+
+                # is_cancelled = asy.cancel()
+
+                # print("was cancelled " + str(is_cancelled))
+                print(after_var)
+                window.after_cancel(after_var)
+
+                timer_start = 20
+
+                big_variable = word(really_big_number, word_length_list)
+
+                after_var = timer(timer_start)
+
+                scrambled_word.set(big_variable)
+
+                really_big_number += 1
+
+                answers = possible_answers(big_variable.original_word, big_variable.word_length_list)
+
+                fancy = Label(window, text="congrats you don't suck")
+                fancy.pack(padx=10, pady=10)
+
+                window.after(3000, fancy.destroy)
+
+                # this is how lambda works lambda:congratulations(fancy)
+
+
+
+
+
+            else:
+                print(answers)
+        window.update
+
+        truth = True
+
     BUTTon = Button(window, text="submit", command=stand_in)
     BUTTon.pack(padx=10, pady=10)
+
+    window.bind('<Return>', stand_inn)
 
     #scrambled_lab = Label(window, textvariable=scrambled_word)
     #scrambled_lab.pack(padx=10,pady=10)
 
+    #after_var = timer(timer_start)
+
     window.title("guessing game")
-    window.geometry("500x500")
+    window.geometry("1000x500")
 
     window.mainloop()
 

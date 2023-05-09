@@ -375,6 +375,9 @@ def main():
 
             else:
                 print(answers)
+                mixer.init()
+                mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
+                mixer.music.play()
 
 
         if q == True:
@@ -471,6 +474,9 @@ def main():
 
             else:
                 print("answer key " + str(answers))
+                mixer.init()
+                mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
+                mixer.music.play()
 
 
         print(base_score)

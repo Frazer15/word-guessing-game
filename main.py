@@ -43,12 +43,15 @@
     #     window.mainloop()
     # main()
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+from pygame import mixer
 from tkinter import *
 from tkinter import ttk
 import random as rnd
 from english_words import get_english_words_set
 import asyncio
 import queue
+import math
 
 class word:
     global word_length_list
@@ -133,7 +136,6 @@ async def are_you_fast(window):
 
 
 
-
 def main():
     global word_length_list
     word_length_list = []
@@ -152,6 +154,18 @@ def main():
 
     timer_start  = 20
 
+    current_mode = "easy mode"
+
+    my_font = "Jokerman"
+
+
+    global score
+    score = 0
+
+    scrabble_dict = {"a": 1, "b": 4, "c": 4, "d": 2, "e": 1, "f": 4,
+                     "g": 3, "h": 3, "i": 1, "j": 10, "k": 5, "l": 2,"m": 4,
+                     "n": 2, "o": 1, "p": 4, "q": 10, "r": 1,  "s": 1,
+                     "t": 1, "u": 2, "v": 5, "w": 4, "x": 8, "y": 3,"z": 10}
     #global absolute
 
     print("This is a check" + str(really_big_number))
@@ -182,27 +196,42 @@ def main():
 
     scrambled_word = StringVar()
 
-    counting_down = StringVar()
+    counting_down = IntVar()
     counting_down.set(timer_start)
+
+    string_score = IntVar()
+    string_score.set(score)
 
     integer = IntVar()
 
+    mode = StringVar()
+
+
     #words = ["orf", "acb", "ilp"]
 
-    lab = Label(window, text="what is the scrambled word")
-    lab.pack(padx=10,pady=10)
+    lab = Label(window, text="what is the scrambled word", font=(my_font,20))
+    lab.place(x=320,y=20)
 
     #stop_watch = Label(window, textvariable=counting_down)
     #stop_watch.pack(padx=10)
 
-    time_piece = Label(window, textvariable=counting_down)
-    time_piece.pack(padx=10,pady=10)
+    time_word = Label(window,text="timer:", font=(my_font,20))
+    time_word.place(x=850,y=10)
 
-    scrambled_lab = Label(window, textvariable=scrambled_word)
-    scrambled_lab.pack(padx=10,pady=10)
+    time_piece = Label(window, textvariable=counting_down, font=(my_font,20))
+    time_piece.place(x=940,y=10)
 
-    entry_field = Entry()
-    entry_field.pack(padx=10,pady=10)
+    scrambled_lab = Label(window, textvariable=scrambled_word, font=(my_font,20))
+    scrambled_lab.place(x=450,y=70)
+
+    entry_field = Entry(window,font=(my_font),width=20)
+    entry_field.place(x=340,y=130)
+
+    score_word = Label(window, text="score:", font=(my_font,20) )
+    score_word.place(x=20,y=10)
+
+    actual_score = Label(window, textvariable=string_score, font=(my_font,20))
+    actual_score.place(x=110,y=10)
 
     scrambled_word.set(str(big_variable))
 
@@ -263,8 +292,8 @@ def main():
             #window.reset(after_var)
         x -= 1
         if x == 0:
-            #window.destroy()
-            pass
+            window.destroy()
+
         counting_down.set(str(x))
         window.update()
 
@@ -290,6 +319,7 @@ def main():
         global really_big_number
         global answers
         global after_var
+        global score
 
         print("This is a check" + str(really_big_number))
         guess = entry_field.get()
@@ -299,6 +329,11 @@ def main():
 
         print("this is halloween " + str(answers) + " on " + str(type(answers)))
 
+        power = len(guess)
+        base_score = 10 ** power
+
+        q = False
+
         for x in answers:
 
             if guess == x:
@@ -307,6 +342,11 @@ def main():
                 #is_cancelled = asy.cancel()
 
                 #print("was cancelled " + str(is_cancelled))
+                #scrabble_dict ={"a":1,"b":4,"c":4,"d":2,"e":1,"f":4,"g":3,"h":3,"i":1,"j":10,"k":5,"l":2,"m":4,
+                                #"n":2,"o":1,"p":4,"q":10,"r":1,"s":1,"t":1,"u":2,"v":5,"w":4,"x":8,"y":3,"z":10}
+
+                q = True
+
                 print(after_var)
                 window.after_cancel(after_var)
 
@@ -323,9 +363,9 @@ def main():
                 answers = possible_answers(big_variable.original_word, big_variable.word_length_list)
 
                 fancy = Label(window, text="congrats you don't suck")
-                fancy.pack(padx=10, pady=10)
+                fancy.place(x=350,y=400)
 
-                window.after(3000, fancy.destroy)
+                window.after(1500, fancy.destroy)
 
                 # this is how lambda works lambda:congratulations(fancy)
 
@@ -335,13 +375,53 @@ def main():
 
             else:
                 print(answers)
+
+
+        if q == True:
+            print("yes")
+            for z in guess:
+                add_to = scrabble_dict[z]
+                add_more = add_to * (10 ** (power - 1))
+                base_score += add_more
+                score += base_score
+                string_score.set(score)
+        else:
+            print("no")
+            for z in guess:
+                add_to = scrabble_dict[z]
+                add_more = add_to * (10 ** (power - 2))
+                base_score += add_more
+                score -= base_score
+                string_score.set(score)
+
         window.update
 
         truth = True
 
+    def lam(current_modde):
+        global current_mode
+        nonlocal my_font
+        nonlocal timer_start
+        if current_modde == "easy mode":
+            my_font = "wingdings"
+            timer_start = 10
+            current_mode = "hard mode"
+
+
+
+
+        else:
+            my_font = "Jokerman"
+            timer_start = 20
+            current_mode = "easy mode"
+
+        window.update()
+
     def stand_inn(event):
         global really_big_number
         global answers
+        global after_var
+        global score
 
         print("This is a check" + str(really_big_number))
         guess = entry_field.get()
@@ -349,7 +429,12 @@ def main():
         entry_field.delete(0, "end")
         print("this is a really big number" + str(really_big_number))
 
-        print("this is halloween " + str(answers) + " on " + str(type(answers)))
+        print("this is not halloween " + str(answers) + " on " + str(type(answers)))
+
+        power = len(guess)
+        base_score = 10 ** power
+
+        q = False
 
         for x in answers:
 
@@ -359,6 +444,9 @@ def main():
                 # is_cancelled = asy.cancel()
 
                 # print("was cancelled " + str(is_cancelled))
+
+                q = True
+
                 print(after_var)
                 window.after_cancel(after_var)
 
@@ -375,24 +463,49 @@ def main():
                 answers = possible_answers(big_variable.original_word, big_variable.word_length_list)
 
                 fancy = Label(window, text="congrats you don't suck")
-                fancy.pack(padx=10, pady=10)
+                fancy.place(x=350,y=400)
 
-                window.after(3000, fancy.destroy)
+                window.after(1500, fancy.destroy)
 
                 # this is how lambda works lambda:congratulations(fancy)
 
-
-
-
-
             else:
-                print(answers)
+                print("answer key " + str(answers))
+
+
+        print(base_score)
+        print(score)
+        if q == True:
+            print("yes")
+            for z in guess:
+                add_to = scrabble_dict[z]
+                add_more = add_to * (10 ** (power - 1))
+                base_score += add_more
+                score += base_score
+                string_score.set(score)
+        else:
+            print("no")
+            for z in guess:
+                add_to = scrabble_dict[z]
+                add_more = add_to * (10 ** (power - 2))
+                base_score += add_more
+                score -= base_score
+                string_score.set(score)
+
+        #score += base_score
+        #string_score.set(score)
         window.update
 
         truth = True
 
     BUTTon = Button(window, text="submit", command=stand_in)
-    BUTTon.pack(padx=10, pady=10)
+    BUTTon.place(x=470,y=175)
+
+    mode.set(current_mode)
+
+
+    mode_selection = Button(window,textvariable=mode, command=lambda: lam(current_mode))
+    mode_selection.place(x=460,y=210)
 
     window.bind('<Return>', stand_inn)
 

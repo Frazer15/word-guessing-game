@@ -1,4 +1,4 @@
-    # import tkinter as tk
+ # import tkinter as tk
     # import random
     #
     # def button_checker():
@@ -52,22 +52,27 @@ from english_words import get_english_words_set
 import asyncio
 import queue
 import math
+import csv  #https://www.geeksforgeeks.org/saving-text-json-and-csv-to-a-file-in-python/#
 
 class word:
+    #global proper_word_length
     global word_length_list
 
     web2lowerset = get_english_words_set(['web2'], lower=True, alpha=True)
-    proper_word_length = 3
+    #proper_word_length = 3
     def __init__(self,really_big_number,word_length_list):
-        if really_big_number == 6 or really_big_number == 0:
-            word_length_list = []
-            if really_big_number != 0:
-                word.proper_word_length += 1
-            for x in word.web2lowerset:
-                if len(x) == word.proper_word_length:  # checking if proper word length
-                    word_length_list.append(x.lower())  # adding the words to the list
-                else:
-                    pass
+        wrd_lngth = really_big_number // 4
+        wrd_lngth += 2
+        word_length_list = []
+        print("this number is really big " + str(really_big_number))
+        # if really_big_number % 3 == 0:
+        #     word_length_list = []
+        #     wrd_lngth += 1
+        for x in word.web2lowerset:
+            if len(x) == wrd_lngth:  # checking if proper word length
+                word_length_list.append(x.lower())  # adding the words to the list
+            else:                    pass
+        print(word_length_list)
         original_word = rnd.choice(word_length_list)  # choosing a word from a list
         #print("this is " + str(original_word)+ "and" + str(type(original_word)))
         #original_word = original_word.lower()
@@ -143,6 +148,9 @@ def main():
     global really_big_number
     really_big_number = 0
 
+    #global proper_word_length
+
+
     global answers
     answers = []
 
@@ -157,6 +165,8 @@ def main():
     current_mode = "easy mode"
 
     my_font = "Jokerman"
+
+    fields = []
 
 
     global score
@@ -366,8 +376,7 @@ def main():
                 fancy.place(x=350,y=400)
 
                 window.after(1500, fancy.destroy)
-
-                # this is how lambda works lambda:congratulations(fancy)
+# this is how lambda works lambda:congratulations(fancy)
 
 
 
@@ -375,9 +384,9 @@ def main():
 
             else:
                 print(answers)
-                mixer.init()
-                mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
-                mixer.music.play()
+                # mixer.init()
+                # mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
+                # mixer.music.play()
 
 
         if q == True:
@@ -390,6 +399,9 @@ def main():
                 string_score.set(score)
         else:
             print("no")
+            mixer.init()
+            mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
+            mixer.music.play()
             for z in guess:
                 add_to = scrabble_dict[z]
                 add_more = add_to * (10 ** (power - 2))
@@ -474,9 +486,9 @@ def main():
 
             else:
                 print("answer key " + str(answers))
-                mixer.init()
-                mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
-                mixer.music.play()
+                # mixer.init()
+                # mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
+                # mixer.music.play()
 
 
         print(base_score)
@@ -491,6 +503,9 @@ def main():
                 string_score.set(score)
         else:
             print("no")
+            mixer.init()
+            mixer.music.load(r"C:\Users\FrazerSmith\Downloads\womp-womp.mp3")
+            mixer.music.play()
             for z in guess:
                 add_to = scrabble_dict[z]
                 add_more = add_to * (10 ** (power - 2))
@@ -691,3 +706,36 @@ main()
 # if __name__ == '__main__':
 #     main()
 #main()
+
+#Saving
+#
+# path = r"C:\Users\FrazerSmith\Downloads\user_info.txt"
+# baa = False
+# try:
+#     myFile = open(path, "x")
+#     myFile.close()
+#     x = "the input"
+#     redLines =""
+# except:
+#     myFile = open(path, "r")
+#     redLines = myFile.readlines()
+#     for z in redLines:
+#         if "the Input" in z:
+#             myFile.truncate()
+#             myFile.close
+#             baa = True
+#             redLines.remove(z)
+#             newList = list(z.strip(" "))
+#             player_highscore = newList[1]
+#             word_length = newList[2]
+#         else:
+#             pass
+#     if baa == False:
+#         myFile.close()
+#
+#
+# newEntry = "Name" + " " + "Highscore" + " " + "wordLength"
+# redLines.append(newEntry)
+# myFile = open(path, "w")
+# myFile.writelines(redLines)
+# myFile.close()

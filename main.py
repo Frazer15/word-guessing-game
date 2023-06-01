@@ -204,7 +204,7 @@ def main():
 
     ran_num = random.randint(1,100)
 
-    if ran_num == 1000:
+    if ran_num == 100:
         mixer.init()
         mixer.music.load(r"C:\Users\FrazerSmith\Downloads\mixkit-bells-of-mystery-581.wav")
         mixer.music.play()
